@@ -1,3 +1,12 @@
+# Note du jour 
+
+14/10/19: 
+- Se rappeler que:
+
+  CustomInput = Cible  
+  CustomOuptu = Source  
+A changer pour tous les fichiers **JFS_plus.csv**
+
 # Fonctionnalité du script main_scrpit.py
 
 1. lister par projet, tous les jobs et les executables dans lesquels ils sont.  
@@ -18,21 +27,18 @@ http://41mag.fr/quest-ce-que-le-dom-dune-page-web.html
     |        |        |
     |        |        |___record [attributs: Identifier, Type, Readonly]
     |        |        |    |
-    |        |        |    |___property [Name,Type] ||collection [Name, Type]
+    |        |        |    |___property [Name,Type] || collection [Name, Type]
     |        |        |    |                             |
     |        |        |    |                             |___subrecord [ attributs: None]
     |        |        |    |                                  |
     |        |        |    |                                  |___proprety [ attributs: Name, Value]
 
 
-# Notes xml SUPprd  
-
+# Notes xml SUPprd    
 
 1. dataset
    - Toutes les valeurs des dataset ne sont pas sous la forme path.ds.  
-
     - certains valeurs sont du type:   /work/home/dsint1/applications/sup/feuillet/datastage/temp/PAR_FIC_CPTE_RENDU_REJETS_NB.ds  
-
 
 - IIS-DSEE-TFCN-00009 in LABISChrgOCTAV01OCTAVT_OEUV job
 
@@ -63,7 +69,7 @@ http://41mag.fr/quest-ce-que-le-dom-dune-page-web.html
         > files found:
 
             >> fileValueRecord: 82,
-            >> fileValueTrueRecord: 82,        
+            >> fileValueTrueRecord: 82,          
             >> datasetValueRecord: 1333 ,  
             >> datasetValueTrueRecord: 1333  
 
@@ -194,3 +200,43 @@ datasetValueTrueRecord: 0
 ---------------------------------------------
 
 ```
+
+# C'est quoi DataStage ?
+
+
+# Architecture de fichier XML    
+
+ schema ... 
+
+# script RFJ_v1.0.py 
+
+Dans ETL DataStage, les stages sont reliés entre eux grace à des link(s) qui indique(nt)generalement la **source** et la **cible** et le(s) **fichier(s)** qui transite(nt) entre ces deuxentités. Ainsi pour avoir des informations exhaustives sur la source, la cible et le fichier, on peut se referer directement au fichier d'export xml des projets. On peut savoir grace aux proprietés des balises **record** : leur type, leur nom, et beaucoup d'attributs. On y trouve aussi les ids des fichiers input etfichiers ouput defini les proprietes **OutputPins** et **InputPins** qui font reference auxbalises record **CustomInput** et **CustomOuput** dans les quels se trouve le chemin absolu desfichiers. L'architecture complete des fichiers xml sont detaillé plus haut.
+
+## la classe  Rfj()  
+
+La classe Rfj 
+
+## file input
+
+Le fichier input de la class RFJ() est le suivant :
+jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv. Ce ficher est produit grace au script JFS_plus.py. 
+
+
+    JFS_plus.py ---------> JFS_plus.csv --------> RFJ_v1.0.py
+
+
+JFS_plus.csv est constitue des champs:
+
+- **jobName** : 
+- **fileName** : 
+- **truefileName** : 
+- **stageName** : 
+- **idenfiantIO** :
+- **TypeIO2**: Ce champs precise le type du fichier. Soit le fichier provient d'une source et constitue son output, donc on aura un type CustomOuptut, soit il est envoyé vers une cible, donc un input pour celle-ci,  on parlera CustomInput.  
+
+Retenons donc que :   
+**CustumOuput**  represente le fichier envoyé vers la **Cible**  
+**CustomInput** represente le fichier provenant de la **Source** 
+
+   des de chaque et le(s) es(n)t (sont) les() fichier lu en CustomInput et le celui ou celles au niveau des balise record, de chaque de record on a une information au niveau des sont de deux categories: CustomInput ou CustomOutput.
+

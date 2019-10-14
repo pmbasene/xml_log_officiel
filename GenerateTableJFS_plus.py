@@ -34,16 +34,18 @@ class ParseElementXML():
     Elle comporte un ensemble de fonctions qui permettent de recuperer, manipuler, et extraire à partir du xml-projet
 
     Note: Pour l'instant afin d'eviter toutes erreurs d'excecution, les fichier XML doivent etre dans le meme dossier que le prog  main_scrpit.py """
+    
 
-    def document(self, fileProjetXML="SUPprd.xml"):
+    def __init__(self):
+        self.relativePathToxmlFile = 'fichierXML'
+
+    def document(self, file):
         #DOC-FTSACprd.xml, SUPprd.xml , MGTPRD.xml
         """cette fonction prend en input le nom du fichier .xml et renvoie le path absolu. Ce dernier sera utilise aussi en input par la fonction 
         getroot() pour instancier le module lmxl.etree """
-        basePath = os.path.dirname(
-            __file__)    # path abs du dossier de ce file
-        fullPath = os.path.join(basePath, fileProjetXML)
-        # fullPath = os.path.abspath(fileProjetXML)
-        # os.chdir(fullPath)
+        basePath = os.path.dirname(__file__)    # path abs du dossier de ce file
+        fullPath = os.path.join(basePath, self.relativePathToxmlFile, file)
+      
         # # ---------------------------------------------------------------------,
         # try:
         #     basePath = os.path.dirname(__file__)
@@ -185,47 +187,37 @@ class ParseElementXML():
         return PAR_list, filePath
 
     def funcname(self, *param):
-        #
         # PropertyOrcollection, fileValueRecord, fileValueTrueRecord, datasetValueRecord, datasetValueTrueRecord
-
         if PropertyOrcollection.tag == 'Collection' and PropertyOrcollection.attrib.get("Name") == 'Properties':
             # attribute_Name = PropertyOrcollection.attrib.get('Name')
 
             for subrecord in PropertyOrcollection:     # ACCES NIVEAU 5
-
                  for prop in subrecord:
                     if prop.attrib.get('Name') == 'Value':
                         Textprop = str(prop.text)
-
                         fileValue = Textprop
                         if (r')file' in fileValue) and (jobN == jobFromXML):
                             # print(fileValue)
-                            PAR_list, filePath = self.retrieveFilePath(
-                                fileValue, blockTextPar)
-                            realFilePath = self.makePathForFileOrFileDataset(
-                                filePath, PAR_list)
+                            PAR_list, filePath = self.retrieveFilePath(fileValue, blockTextPar)
+                            realFilePath = self.makePathForFileOrFileDataset(filePath, PAR_list)
                             # print(realFilePath)
 
                             fileValueRecord.append(fileValue)
                             fileValueTrueRecord.append(realFilePath)
 
-                            tup = (jobN, logfile, fileValue,
-                                   realFilePath, attribute_type)
+                            tup = (jobN, logfile, fileValue,realFilePath, attribute_type)
                             tuple_Job_logfile_file_trueFile_attr.append(tup)
                             # print(
                             # f"{jobN},{logfile},{fileValue},{realFilePath},NaN,NaN,NaN ,NaN,{attribute_type}")
                             # print(f"jobN, logfile, fileValue, realFilePath, datasetValue, realFilePathDataset, stageName, stageType,recordTypeRecord")
                             # return fileValueRecord, fileValueTrueRecord,
-                            # print(tup)
-
+                            # print(tup)  
+                            
                         datasetValue = Textprop
                         if ('.ds' in datasetValue) and (jobN == jobFromXML):
-
                              # print(realFilePathDataset)
-                            PAR_dataset_list, filePathDataset = self.retrieveFilePath(
-                                datasetValue, blockTextPar)
-                            realFilePathDataset = self.makePathForFileOrFileDataset(
-                                filePathDataset, PAR_dataset_list)
+                            PAR_dataset_list, filePathDataset = self.retrieveFilePath(datasetValue, blockTextPar)
+                            realFilePathDataset = self.makePathForFileOrFileDataset(filePathDataset, PAR_dataset_list)
 
                             datasetValueRecord.append(datasetValue)
                             datasetValueTrueRecord.append(realFilePathDataset)
@@ -345,13 +337,14 @@ jobFromXMLpd = []
 logfilepd = []
 tuple_job_logfilepd = []
 
+
 print(f'Projet,job,file,truefile,stage,idIO,typeIO')
-
+path_to_xmlFolder = "/Users/ganasene/Desktop/insyco/projet_xml_insyco/xml_log_officiel/fichierXML/"
 # fileProjetXML = "MGTPRD.xml"
-for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyco/xmlFile/'):
-    
-    if (fileProjetXML != ".DS_Store") and (fileProjetXML != ".vscode"):
+for fileProjetXML in os.listdir(path_to_xmlFolder):
+    # print(fileProjetXML)
 
+    if (fileProjetXML != ".DS_Store") and (fileProjetXML != ".vscode"):
         # fileProjetXML, ext= os.path.splitext(fileProjetXML)
         # print(fileProjetXML)
 
@@ -360,14 +353,14 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
         ### DOC-FTSACprd.xml, SUPprd.xml , MGTPRD.xml, SOC-CLIPIprd.xml, DOC-OCTAVprd.xml
         ### UTIprd.xml Docprd.xml,SOC-OSCARprd.xml
         ### no files in FTSACprd.xml ,DOC-OCTAVprd.xml, UTIprd.xml
-        ### 1 file in SOC-CLIPIprd.xml
-        
-        fullPath = b.document(fileProjetXML)
+        ### 1 file in SOC-CLIPIprd.xml      
+        # fullPath = b.document(fileProjetXML)
+        # print(fullPath)
 
         # Instanciation du module etree
         ## methode parse
-        tree = etree.parse(fullPath)
-        root = tree.getroot()
+        # tree = etree.parse(fullPath)
+        # root = tree.getroot()
 
         # Initiation des listes de collection des jobs extraits dans les fichiers xml
         jobList = []
@@ -375,12 +368,14 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
         stageList = []
         fileInput = []
         fileOutput= []
-        idInputList = []
-        idOuputList = []
+        # idInputList = []
+        # idOuputList = []
 
         p = ParseElementXML()
         fullPath = p.document(fileProjetXML)
+        print(fullPath)
         root = p.getRoot(fullPath)
+       
 
         # snippet pour rechercher et collecter les PAR au niveau des logs
         for logfile in os.listdir(path_to_logfullDS):
@@ -394,7 +389,7 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
 
                     # print(jobName)
                     if jobName in f:
-                        print(jobName+'-->'+logfile)   ############### a commenter
+                        # print(jobName+'-->'+logfile)   ############### a commenter
                         jobList.append(jobName)
                         blockTextPar = q.blockEventID(f)
 
@@ -404,6 +399,9 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                             attribute_identifier = record.attrib.get('Identifier')
 
                             if attribute_type == 'CustomStage':
+                                idInputList=[]
+                                idOuputList = []               
+
                                 stageNumberList.append(attribute_type)    # col 4
 
                                 for PropertyOrcollection in record:  # ACCES NIVEAU 4
@@ -419,12 +417,12 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                                         if r"|" in idxs:
                                             idInput = idxs.split('|')       # les id des inputs
                                             idInputList.append(idInput)
-                                            # print(jobName+';'+stageName+';'+str(idInputList)+';'+attribute_Name)
+                                            print(jobName+';'+stageName+';'+str(idInputList)+';'+attribute_Name)
                                             
                                         else:
                                             idInput = idxs
                                             idInputList.append(idInput)
-                                            # print(jobName+';'+stageName+';'+str(idInputList)+';'+attribute_Name)
+                                            print(jobName+';'+stageName+';'+str(idInputList)+';'+attribute_Name)
 
                                         # print(jobN,'--',stageType,'--', stageName,'--',idInput,'(I)')
                                 
@@ -434,14 +432,13 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                                             idOutput = idxs.split('|')
                                             idOuputList.append(idOutput)
                                             
-                                            
-                                            # print(jobName+';'+stageName+';'+str(idOuputList)+';'+attribute_Name)
-
+                                            print(jobName+';'+stageName+';'+str(idOuputList)+';'+attribute_Name)
+# 
                                         else:
                                             idOutput = idxs
                                             idOuputList.append(idOutput)
-                                            # print(jobName+';'+stageName+';' +str(idOuputList)+';'+attribute_Name)                                         
-
+                                            print(jobName+';'+stageName+';' +str(idOuputList)+';'+attribute_Name)                                         
+# 
                             elif attribute_type == 'CustomInput':
                                 for PropertyOrcollection in record:
                                     if PropertyOrcollection.tag == 'Collection' and PropertyOrcollection.attrib.get("Name") == 'Properties':
@@ -473,7 +470,7 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                                                         PAR_list, filePath = p.retrieveFilePath(fileValue, blockTextPar)
                                                         realFilePath = p.makePathForFileOrFileDataset(  filePath, PAR_list)
 
-                                                        print(filename+',' + jobName+','+datasetValue + ',' + realFilePath + ',' + stageName+','+attribute_identifier+','+attribute_type)
+                                                        # print(filename+',' + jobName+','+datasetValue + ',' + realFilePath + ',' + stageName+','+attribute_identifier+','+attribute_type)
                                                         fileInput.append(datasetValue)
 
                                            
@@ -493,7 +490,7 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                                                         PAR_list, filePath = p.retrieveFilePath(fileValue, blockTextPar)
                                                         realFilePath = p.makePathForFileOrFileDataset(  filePath, PAR_list)
 
-                                                        print(filename+','+jobName+','+fileValue+','+realFilePath+','+stageName+','+attribute_identifier+','+attribute_type)
+                                                        # print(filename+','+jobName+','+fileValue+','+realFilePath+','+stageName+','+attribute_identifier+','+attribute_type)
                                                         fileOutput.append(fileValue)
 
                                                     if ('.ds' in datasetValue) and (attribute_identifier == idOutput):
@@ -501,7 +498,7 @@ for fileProjetXML in os.listdir('/Users/ganasene/Desktop/insyco/projet_xml_insyc
                                                         PAR_list, filePath = p.retrieveFilePath(fileValue, blockTextPar)
                                                         realFilePath = p.makePathForFileOrFileDataset(  filePath, PAR_list)
 
-                                                        print(filename+','+jobName+','+datasetValue+','+realFilePath +','+stageName+','+attribute_identifier+','+attribute_type)
+                                                        # print(filename+','+jobName+','+datasetValue+','+realFilePath +','+stageName+','+attribute_identifier+','+attribute_type)
                                                         fileOutput.append(datasetValue)
                             
 
