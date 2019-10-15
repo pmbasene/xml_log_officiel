@@ -94,17 +94,13 @@ class SupprimerDoublonsLignesCSV():
                 csv_writer.writerow(line2)
 
  
-# ########## Test P1    #####
-# sD = SupprimerDoublonsLignesCSV.
-# # print(len(list1))
-# # print(len(list1_clean))
 
 ###########################################################################
 
 """
 Purpose 2
 --------
-YANN REQUIREMENT :
+YANN REQUIREMENT(S) :
 ---------------
  << j'aimerai que en priorite tu puisses nous determiner 
 les relations entre les jobs en se basant sur le nom du fichier.>>
@@ -288,46 +284,14 @@ class Rfj:
         #         # csvfile.write("%s,%s\n" % (key, value))
         pass
 
-## affichage #####
-## Pour memo les schema de la table JFS ['Projet','job','file','truefile','stage','idIO','typeIO']
 
-###---------------- Programme Main---------------------------------------------------------------------------------------- ###
+"""
+Purpose 3
+--------
+CHRIS REQUIREMENTS :
+---------------
 
-
-rep = "/Users/ganasene/Desktop/insyco/projet_xml_insyco/code/resulats_projet_executable"
-# pathOffileInput = os.path.join(rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
-pathOffileOuput = os.path.join(rep, 'RFJ_fileCentertris.csv')
-
-###### initialisation de la classe 
-a = Rfj()
-####
-colItemsFilter_list = a.colValueUniq('truefile')
-# print(colItemsFilter_list)
-# print(len(colItemsFilter_list))
-# colItemsFilter_list= a.supprimerDoublons(colItemsFilter_list)
-# print(len(colItemsFilter_list))
-
-################## Lecture ###################
-rows = a.createRFJ('truefile', 'stage')
-# pprint(rows)
-# print(len(rows))
-
-
-################# ecriture #############
-# a.writeRFJ_ToCSV(rows)
-
-#### Pas important mais a ne pas supprimer
-# # read
-# with open(pathOffileOuput, 'r') as csvfile:
-#     reader = csv.reader(csvfile)
-#     # print(reader)
-#     # print(dict(reader))
-#     for line in reader:
-#         print(line)
-
-#         # csvfile.write("%s,%s\n" % (key, value))
-
-
+"""
 
 class Rsfs(Rfj):
     """ Rsfs : relation Stage Source - file - stage Cible
@@ -380,101 +344,46 @@ class Rsfs(Rfj):
         pprint(rows)
         return rows
 
+
+
+
+###---------------- Programme Main---------------------------------------------------------------------------------------- ###
+
+## Pour memo les schema de la table JFS ['Projet','job','file','truefile','stage','idIO','typeIO']
+rep = "/Users/ganasene/Desktop/insyco/projet_xml_insyco/code/resulats_projet_executable"
+# pathOffileInput = os.path.join(rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
+pathOffileOuput = os.path.join(rep, 'RFJ_fileCentertris.csv')
+
+
+# ################  MAIN CLASS  SupprimerDoublonsLignesCSV     ###################
+                    #-------------------------------------------#
+# sD = SupprimerDoublonsLignesCSV.
+# # print(len(list1))
+# # print(len(list1_clean))
+
+##################  MAIN CLASS  Rfj  #############################################
+            #-------------------------------------------#
+a = Rfj()
+####
+colItemsFilter_list = a.colValueUniq('truefile')
+# print(colItemsFilter_list)
+# print(len(colItemsFilter_list))
+# colItemsFilter_list= a.supprimerDoublons(colItemsFilter_list)
+# print(len(colItemsFilter_list))
+
+################## Lecture ###################
+rows = a.createRFJ('truefile', 'stage')
+# pprint(rows)
+# print(len(rows))
+
+
+################# ecriture #############
+# a.writeRFJ_ToCSV(rows)
+
+
+###################  MAIN CLASS  Rfj   ##############################################
+                #-------------------------------------------#
 #### lecture classe Rsfs() ######
-# b = Rsfs()
-# ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
-# lrow = b.Write_StgSource_File_StgCible(ls, lc)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def removeExt(string):
-#     """Permet d'enlever l'extension du nom
-#     Arguments:
-#         string {[type]} -- [le fichier avec l'extension]  
-#     Returns:
-#         [tuple] -- [couple nom - ext. cependant on tient compte que du nom]
-#     """
-#     if '.' in string:
-#         l, r = string.split('.')
-#     else:
-#         l = string
-#     return l
-
-
-# LC=[]
-# LS=[]
-
-# for fic in colItemsFilter_list:
-#     fic= removeExt(fic)
-#     # print(fic) 
-#     for line in rows:     # lignes du fichier csv 
-#         linef = removeExt(line[0])
-#         lineIO = line[2]
-#         # print(linef)
-#         if fic == linef:     # cad  les deux fichiers des deux listes sont idem
-#             # print(line)
-#             if lineIO == 'Cible':
-#                 lCible = linef, line[1]
-#                 LC.append(lCible)
-#                 print(lCible,'cible')
-#             elif lineIO == 'Source':
-#                 # l1 = l, line[1]
-#                 lSource = line[1], linef
-#                 LS.append(lSource)
-#                 print('Source', lSource)
-            
-# # print(LS)
-# print(len(LS))
-# print(len(LC))
-# # print(LS)
-# LS = a.supprimerDoublons(LS)
-# LC = a.supprimerDoublons(LC)
-# print(len(LS))
-# print(len(LC))
-# # print(LS)
-
-
-# def Write_StgSource_File_StgCible(LS, LC):
-#     rows=[]
-#     for source in LS:
-#         for cible in LC:
-#             if source[1]==cible[0]:
-#                 row = source[0]+','+source[1]+','+cible[1]+'\n'
-#                 # row = tuple(row)
-#                 rows.append(row)
-#     pprint(rows)
-                
-#     # with open('StgSource_File_StgCible.csv', 'w') as wf:
-#     #     write_csv = csv.writer(wf)
-#     #     write_csv.writerow(rows)
-
-# Write_StgSource_File_StgCible(LS, LC)
-
-
-
-
-
-
-
-
-
-
+b = Rsfs()
+ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
+lrow = b.Write_StgSource_File_StgCible(ls, lc)
