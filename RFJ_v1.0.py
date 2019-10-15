@@ -7,15 +7,19 @@ from pprint import pprint
 General purpose
 ===============
 Ce script contient trois programmes:
-- Le premier(Purpose 1) a ete implemente dans le but de supprimer les doublons (replication de lignes) de la table job-file-stage (JFS) deja cree que Christpher m'a signale (en attendant que le 
-NB: Integrer ce scrpit dans celui du script_job_file_stage_Plus.py afin de d'optimiser le workflow. Ce processus a\' deux etapes n'est plus une solution perenne.
+- Le premier(Purpose 1) a ete implemente afin de supprimer les doublons (replication de lignes) de la table
+job-file-stage (JFS) deja cree que Christpher m'a signale.( Probably Will be move into JFS_plus.py )
 
-- Le deuxieme(Purpose 2), permet d'etablir la relation en (RFJ) d'ou le nom du script. L'idee c'est que, pour chaque file donn\'e, lister les jobs qui l'utlisent soit en input, soit en output.
+NB: Integrer ce scrpit dans  script_job_file_stage_Plus.py afin de d'optimiser le workflow. ( Probably Will be 
+move into JFS_plus.py ). Ce processus a\' deux etapes n'est pas une solution perenne.
 
-NB: ces deux scripts executent en entree le fichier-output nomm\'e 'script_job_file_stage_Plus.py' . 
-Pour executer le script  du purpose 1, il faut dabord le decommente et en commenter parallelelement celui du Purpose2, et vise-versa
+- Le deuxieme(Purpose 2), permet d'etablir la relation entre File et Job (RFJ) d'ou le nom du script. L'idee c'est que, 
+pour chaque file donn\'e, lister les jobs qui l'utlisent soit en Cible ou en Source.
+NB: ces deux scripts executent en entree le fichier-output nomm\'e 'script_job_file_stage_Plus.py'.  
+Pour executer le script  du purpose 1, il faut dabord le decommente et en commenter parallelelement celui 
+du Purpose2, et vise-versa.
 
-- Le troisieme(Purpose 3), permet d'etablir de creer une relation entre stage Cible , Source et Fichier
+- Le troisieme(Purpose 3), permet d'etablir une relation entre stageCible , StageSource et Fichier. 
 
 Next Purpose 
 -----------
@@ -34,16 +38,18 @@ voir pourquoi ce fichier ci dessous, a 'CORPSPAR_NOM_FIC_CATEL' apres l'extensio
 /export/home/exp/applications/doc/onide/datastage/source/TMP_FF_PENEF_EXTRANA_ONIDE_20190702150043.csvCORPSPAR_NOM_FIC_CATEL
 """
 class SupprimerDoublonsLignesCSV():
-    """Cette classe comporte deux principales fonctions et une fonction intermediaire. 
-    Les fonctions principales sont essentiellement compos\'ee d'une phase de lecture avec suppressions de doublons, il s'agit ici de la fonction <removeCsvLines()> 
-    et d'une phase d'ecriture <writeNewCSV()> qui ...
-    La fonction <removeCsvLines()> est execut\'e en premier. Elle prend en entree un fichier INPUT avec eventuellement des doublons (job-file-stage (JFS), en l'occurence) et retourne une liste de lignes sans doubons.
+    """Cette classe comporte deux principales fonctions et une fonction utilitaire. 
+    Les fonctions principales sont  <removeCsvLines()> ,  <writeNewCSV()> . <removeCsvLines()> permet de lire
+    en supprimant les doublons et la fonction <removeCsvLines()> est la phase d'ecriture <writeNewCSV()> .
+    La fonction utilitaire <supprimerDoublons()> 
+
+    La fonction <removeCsvLines()> est execut\'e en premier. Elle prend en entree un fichier INPUT avec eventuellement
+    des doublons (job-file-stage (JFS), en l'occurence) et retourne une liste de lignes sans doubons.
     Elle genere en retour une liste de lignes sans doublons. Cette liste sera utlis\'e par la fonction writeNewCSV().
 
     La fonction writeNewCSV()  un fichier qui est stock\'e dans vers le chemin precis\'e au niveau des proprietes
     (fonction init)
     """
-
     def __init__(self):
         self.rep = '/Users/ganasene/Downloads/projet_xml_insyco/code/resulats_projet_executable'
         self.pathInput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv')
@@ -105,7 +111,6 @@ les relations entre les jobs en se basant sur le nom du fichier.>>
 
 En tete tableur ['Projet','job','file','truefile','stage','idIO','typeIO']
 """
-
 class Rfj:
 
     def __init__(self):
@@ -376,9 +381,9 @@ class Rsfs(Rfj):
         return rows
 
 #### lecture classe Rsfs() ######
-b = Rsfs()
-ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
-lrow = b.Write_StgSource_File_StgCible(ls, lc)
+# b = Rsfs()
+# ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
+# lrow = b.Write_StgSource_File_StgCible(ls, lc)
 
 
 

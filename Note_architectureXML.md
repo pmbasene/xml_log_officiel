@@ -69,7 +69,7 @@ http://41mag.fr/quest-ce-que-le-dom-dune-page-web.html
         > files found:
 
             >> fileValueRecord: 82,
-            >> fileValueTrueRecord: 82,          
+            >> fileValueTrueRecord: 82,
             >> datasetValueRecord: 1333 ,  
             >> datasetValueTrueRecord: 1333  
 
@@ -79,14 +79,14 @@ http://41mag.fr/quest-ce-que-le-dom-dune-page-web.html
    - Tous les jobs present dans chacun de ces fichiers xml   /ok
         a. le resultat de cette operation va retourner une listes de tous les jobs trouve dans un fichier XML donnee.
             note : l'objectif c'est de le faire avec tous les fichiers xml
-    - Pour chaque job, extraire tous les noms et types de stage, files(txt, nan, csv, ds).   
+    - Pour chaque job, extraire tous les noms et types de stage, files(txt, nan, csv, ds).  
     - Remplacer les references repertoire des files par leurs valeurs exactes qui se trouvent dans les fichiers execution (log).
     - Creer une table avec comme colonnes:
           -  
   
-2. Aller chercher dans les jobs correspondants dans les fichiers executables (les logs).
-        a. lire un par un tous les fichiers executables (log) qui sont le dossier logfullDS (faire une booucle for dans lequel with open sera appele)
-        b. ensuite toujours dans cette meme boucle for, parcourir la liste collectionJobFromXML et pour chaque element i (qui est en fait le nom du job recuperer dans le fichier xml) de cette liste tester si il est bien presence un des fichier log.
+2. Aller chercher les jobs correspondants dans les fichiers executables (les logs).
+        a. Lire un à un tous les fichiers executables (log) qui sont dans le dossier logfullDS (faire une boucle for dans lequel with open sera appelé)
+        b. Toujours dans cette meme boucle for, parcourir la liste collectionJobFromXML et pour chaque element i (qui est en fait le nom du job recuperer dans le fichier xml) de cette list.  Tester s'il est bien present le fichier log.
             Si oui afficher le filename de ce fichier
 
 ## Methodologies  
@@ -94,10 +94,6 @@ http://41mag.fr/quest-ce-que-le-dom-dune-page-web.html
 j'ai obtenu les resultats suivants avec l'approche suivante:  
 
 ### App1: Approche naive: 
-
-
-
-
 
 
 ## Resultat bash
