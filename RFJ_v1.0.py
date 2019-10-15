@@ -3,57 +3,59 @@ import os
 import csv
 from pprint import pprint
 
-"""
-General purpose
-===============
-Ce script contient trois programmes:
-- Le premier(Purpose 1) a ete implemente afin de supprimer les doublons (replication de lignes) de la table
-job-file-stage (JFS) deja cree que Christpher m'a signale.( Probably Will be move into JFS_plus.py )
+"""  # General purpose
+    ===============
+    Ce script contient trois programmes:
+    - Le premier(Purpose 1) a ete implemente afin de supprimer les doublons (replication de lignes) de la table
+    job-file-stage (JFS) deja cree que Christpher m'a signale.( Probably Will be move into JFS_plus.py )
 
-NB: Integrer ce scrpit dans  script_job_file_stage_Plus.py afin de d'optimiser le workflow. ( Probably Will be 
-move into JFS_plus.py ). Ce processus a\' deux etapes n'est pas une solution perenne.
+    NB: P1 sera integr\'e dans le 'script_job_file_stage_Plus.py' afin d'optimiser le workflow. ( Probably Will be 
+    move into JFS_plus.py ). Ce processus \'a deux etapes n'est pas une solution perenne.
 
-- Le deuxieme(Purpose 2), permet d'etablir la relation entre File et Job (RFJ) d'ou le nom du script. L'idee c'est que, 
-pour chaque file donn\'e, lister les jobs qui l'utlisent soit en Cible ou en Source.
-NB: ces deux scripts executent en entree le fichier-output nomm\'e 'script_job_file_stage_Plus.py'.  
-Pour executer le script  du purpose 1, il faut dabord le decommente et en commenter parallelelement celui 
-du Purpose2, et vise-versa.
+    - Le deuxieme(Purpose 2), permet d'etablir la relation entre File et Job (RFJ) d'o\'u le nom du script
+    L'idee est, pour chaque file donn\'e, qu'on puisse lister les jobs qui l'utlisent soit en Cible, soit en Source.
+    NB: Ces deux scripts executent d'entr\'ee (input) le fichier 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv' 
+        qui est le fichier de sortie(output) de  'script_job_file_stage_Plus.py'.  
 
-- Le troisieme(Purpose 3), permet d'etablir une relation entre stageCible , StageSource et Fichier. 
+    - Le troisieme(Purpose 3), permet d'etablir une relation entre stageCible , StageSource et Fichier. 
 
-Next Purpose 
------------
-Creer une fonction pour chaque script ou si besoin une classe.
-
+    # Mode d'excution des scripts
+    --------------------------
+    Pour executer un de ces scripts, il faut aller \'a la section 'MAIN' qui se trouve en bas du code et 
+    ensuite d\'ecommenter la partie qui voous interesse par exemple 'MAIN P1'
+    !!! Attention: P1 est completement independant de P2 et P3. Donc vous pouvez l'executer en commentant les deux autres.
+                   Cependant, P2 et P3 sont completementaires donc li\'es. En effet, P2 herite de P3 . 
+                   P2 prend en parametres deux arguments qui sont les returns des methodes createRFJ et colValueUniq de la classe Rfj
+    
 """
 ########################################
-"""
-Purpose 1:
---------
-Suppressions des doublons de table 'cf variable path'. 
+"""Purpose 1:
+    --------
+    Suppressions des doublons de table 'cf variable path'. 
 
-Note pour moi :
---- 
-voir pourquoi ce fichier ci dessous, a 'CORPSPAR_NOM_FIC_CATEL' apres l'extension:
-/export/home/exp/applications/doc/onide/datastage/source/TMP_FF_PENEF_EXTRANA_ONIDE_20190702150043.csvCORPSPAR_NOM_FIC_CATEL
+    Note pour moi :
+    --- 
+    voir pourquoi ce fichier ci dessous, a 'CORPSPAR_NOM_FIC_CATEL' apres l'extension:
+    /export/home/exp/applications/doc/onide/datastage/source/TMP_FF_PENEF_EXTRANA_ONIDE_20190702150043.csvCORPSPAR_NOM_FIC_CATEL
 """
 class SupprimerDoublonsLignesCSV():
     """Cette classe comporte deux principales fonctions et une fonction utilitaire. 
     Les fonctions principales sont  <removeCsvLines()> ,  <writeNewCSV()> . <removeCsvLines()> permet de lire
-    en supprimant les doublons et la fonction <removeCsvLines()> est la phase d'ecriture <writeNewCSV()> .
-    La fonction utilitaire <supprimerDoublons()> 
+    en supprimant les doublons et la fonction <removeCsvLines()> est la phase d'ecriture <writeNewCSV()>.
+    La fonction utilitaire <supprimerDoublons()> permet juste supprimer des eventuels doublons au cours du coding.
 
-    La fonction <removeCsvLines()> est execut\'e en premier. Elle prend en entree un fichier INPUT avec eventuellement
-    des doublons (job-file-stage (JFS), en l'occurence) et retourne une liste de lignes sans doubons.
+    La fonction <removeCsvLines()> est execut\'ee en premier. Elle prend inmplitement en parametre le fichier INPUT qui a
+    d'eventuels doublons, il s'agit du fichier (job-file-stage (JFS) et retourne une liste de lignes sans doubons.
     Elle genere en retour une liste de lignes sans doublons. Cette liste sera utlis\'e par la fonction writeNewCSV().
 
-    La fonction writeNewCSV()  un fichier qui est stock\'e dans vers le chemin precis\'e au niveau des proprietes
+    La fonction writeNewCSV() enregistre les resulats dans un fichier qui est stock\'e dans vers le chemin precis\'e au niveau des proprietes
     (fonction init)
     """
     def __init__(self):
-        self.rep = '/Users/ganasene/Downloads/projet_xml_insyco/code/resulats_projet_executable'
-        self.pathInput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv')
-        self.pathOuput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO_clean.csv')
+
+        self.rep = '/Users/ganasene/Downloads/projet_xml_insyco/code/resulats_projet_executable'                       # self.rep est le dirname 
+        self.pathInput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv')        # self.pathinput est le path absolu du fichier input cad le fichier lu en imput
+        self.pathOuput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO_clean.csv')  # self.pathOuput est path absolu pour renommer le nouveau fichier
 
     def supprimerDoublons(self, doublonsList):
         ### supprimer doublons(list comprehension methods) 
@@ -93,27 +95,24 @@ class SupprimerDoublonsLignesCSV():
             for line2 in list1_clean:
                 csv_writer.writerow(line2)
 
- 
+##########################################
 
-###########################################################################
+"""Purpose 2
+    --------
+    YANN REQUIREMENT(S) :
+    ---------------
+    << j'aimerai que en priorite tu puisses nous determiner 
+    les relations entre les jobs en se basant sur le nom du fichier.>>
 
-"""
-Purpose 2
---------
-YANN REQUIREMENT(S) :
----------------
- << j'aimerai que en priorite tu puisses nous determiner 
-les relations entre les jobs en se basant sur le nom du fichier.>>
-
-En tete tableur ['Projet','job','file','truefile','stage','idIO','typeIO']
+    En tete tableur ['Projet','job','file','truefile','stage','idIO','typeIO']
 """
 class Rfj:
 
     def __init__(self):
 
-        self.rep ='/Users/ganasene/Desktop/insyco/projet_xml_insyco/code/resulats_projet_executable'
-        self.pathOffileOuput = os.path.join(rep,'RFJ_basedOnTrueFile.csv')
-        self.pathOffileInput = os.path.join(rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
+        self.rep = '/Users/ganasene/Desktop/insyco/projet_xml_insyco/xml_log_officiel/resulats_projet_executable/'
+        self.pathOffileOuput = os.path.join(self.rep,'RFJ_basedOnTrueFile.csv')
+        self.pathOffileInput = os.path.join(self.rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
 
     def __str__(self):
         return self.pathOffileOuput
@@ -161,11 +160,14 @@ class Rfj:
         return cleanList
             
     def colValueUniq(self, colCible='file'):
-        """cette fonction permet d'extraire, nettoyer et collecter les lignes de la  colonne <colCible>(par exemple file ou truefile)
-        Elle prend en entree le nom de la colonne cible de la table (JFS) et retourne une liste d'items uniques de cette colonne <colCible> 
-        NB1: <colCible> est la colonne Centrale
-        Note : Ameliorer cette fonction pour qu'elle prend en charge les autres colonnes en tant que colonnes-cilbles. Parce qua ce stade on prend en compte que les 
-        les file et les truefiles """
+        """
+            Cette fonction permet d'extraire, nettoyer et collecter l'ensemble des lignes d'une colonne <colCible> (par exemple file ou truefile).
+            Elle prend en parametre le nom de la colonne <cible> de la table (JFS) et retourne une liste d'items uniques de cette colonne <colCible> 
+            NB1: <colCible> est la colonne Centrale.
+            Note : Ameliorer cette fonction pour qu'elle prenne en charge les autres colonnes en tant que colonnes-cilbles. Parce qua ce stade on prend en compte que les 
+            les file et les truefiles, stage.
+
+        """
         with open(self.pathOffileInput, 'r') as file1:
             reader = csv.DictReader(file1, delimiter=',')
 
@@ -186,7 +188,6 @@ class Rfj:
                 # print(colItemsFilter_list)
                 # colItemsIO = [f['typeIO'] for f in reader]
                 # print(colItemsIO)
-
 
             elif colCible == 'file':
                 colItems = [f[colCible] for f in reader]
@@ -243,26 +244,14 @@ class Rfj:
                             row = [fileS, line[colAttachedToCible], line['typeIO']]
                             rows.append(row)
 
-            # elif colCible == 'file':
-            #     colItemsFilter_list = self.colValueUniq(colCible)    # appel de la fonction  <metadataVlue()
-            #     rows= []
-            #     for fileS in colItemsFilter_list:
-            #         for line in lines:
-            #             # fileCibleB = self.splitPath(line[colCible])[1]
-            #             fileCibleB = line[colCible]
-            #             fileCibleB = self.buildFilePath(fileCibleB) # extraire just le filname
-            #             # print(fileCibleB)
-            #             if fileS == fileCibleB:
-            #                 row = [fileS, line[colAttachedToCible]]
-            #                 rows.append(row)
-        # print(len(rows))
         rows_clean = self.supprimerDoublons(rows)   # suppression des doublons lignes
 
         return rows_clean
 
     def writeRFJ_ToCSV(self, rows):
-        '''cette fonction permet d'ecrire (enregistrer) les resulats obtenus grace a la fonction <createRFJ()> , en format csv. 
-        Elle prend en entree collection de liste(liste de liste ) Job-file et None'''
+        """
+        cette fonction permet d'ecrire en format (enregistrer) les resulats obtenus grace a la fonction <createRFJ()> . 
+        Elle prend en entree collection de liste(liste de liste ) Job-file et None"""
         path, name = os.path.split(self.pathOffileOuput)
 
         with open(self.pathOffileOuput, 'w') as csvfile:
@@ -284,26 +273,31 @@ class Rfj:
         #         # csvfile.write("%s,%s\n" % (key, value))
         pass
 
-
-"""
-Purpose 3
---------
-CHRIS REQUIREMENTS :
----------------
+"""Purpose 3
+    --------
+    CHRIS REQUIREMENTS :
+    ---------------
 
 """
 
 class Rsfs(Rfj):
-    """ Rsfs : relation Stage Source - file - stage Cible
-    Elle herite toutes les methodes definies dans la classe Rfj """
+    """ DOCSTRING
+        Rsfs : relation Stage Source - file - stage Cible
+        Elle herite toutes les methodes definies dans la classe Rfj
+     """
+
+    def __init__(self):
+        Rfj.__init__(self)
+        self.LC = []   # list des items cibles(stage cible,file). 
+        self.LS = []   # list des items sources(stage source , file)
+        self.pathWrite = os.path.join(self.rep, 'resultatRsfs.csv')
 
     def removeExt(self, string):
-        """
-        Permet d'enlever l'extension du nom 
-        Arguments:
-            string {[type]} -- [le fichier avec l'extension]
-        Returns:
-            [tuple] -- [couple nom - ext. cependant on tient compte que du nom]
+        """Permet d'enlever l'extension du nom 
+            Arguments:
+                string {[type]} -- [le fichier avec l'extension]
+            Returns:
+                [tuple] -- [couple nom - ext. cependant on tient compte que du nom]
         """
         if '.' in string:
             l, r = string.split('.')
@@ -312,47 +306,51 @@ class Rsfs(Rfj):
         return l
 
     def getListSourceAndListCible(self, colItemsFilter_list, rows):
-        LC = []
-        LS = []
+
         for fic in colItemsFilter_list:
             fic = self.removeExt(fic)
             for line in rows:     # lignes du fichier csv
                 linef = self.removeExt(line[0])
                 lineIO = line[2]
-                if fic == linef:     # cad  les deux fichiers des deux listes sont idem
+                if fic == linef:     # Cad  les deux fichiers des deux listes sont idem
                     if lineIO == 'Cible':
                         lCible = linef, line[1]
-                        LC.append(lCible)
-                        print(lCible, 'cible')
+                        self.LC.append(lCible)
+                        # print(lCible, 'cible')
                     elif lineIO == 'Source':
-
                         lSource = line[1], linef
-                        LS.append(lSource)
-                        print('Source', lSource)
-        LS = a.supprimerDoublons(LS)
-        LC = a.supprimerDoublons(LC)
-        return LS, LC
+                        self.LS.append(lSource)
+                        # print('Source', lSource)
+        LS_clean = a.supprimerDoublons(self.LS)
+        LC_clean = a.supprimerDoublons(self.LC)
+        return LS_clean, LC_clean
 
-    def Write_StgSource_File_StgCible(self, LS, LC):
-        rows = []
-        for source in LS:
-            for cible in LC:
-                if source[1] == cible[0]:
-                    row = source[0]+','+source[1]+','+cible[1]+'\n'
-                    # row = tuple(row)
-                    rows.append(row)
-        pprint(rows)
-        return rows
+    def Write_StgSource_File_StgCible(self,colItemsFilter_list, rows):
 
-
+        Arows = []
+        with open(self.pathWrite,'w') as wf:
+            # reader_csv = csv.writer(wf)
+            filedNames= "StageSource,File,StageCible\n"
+            wf.write(filedNames)   
+            LS, LC = self.getListSourceAndListCible(colItemsFilter_list, rows)
+            for source in LS:
+                for cible in LC:
+                    if source[1] == cible[0]:
+                        row = source[0]+','+source[1]+','+cible[1]+'\n'
+                        # print(row)
+                        # row = tuple(row)
+                        Arows.append(row)
+                        wf.write(row)
+                        # reader_csv.writerows(row)
+        print("Write ! Its done!")
+        pprint(Arows)
+        return Arows
 
 
 ###---------------- Programme Main---------------------------------------------------------------------------------------- ###
 
+
 ## Pour memo les schema de la table JFS ['Projet','job','file','truefile','stage','idIO','typeIO']
-rep = "/Users/ganasene/Desktop/insyco/projet_xml_insyco/code/resulats_projet_executable"
-# pathOffileInput = os.path.join(rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
-pathOffileOuput = os.path.join(rep, 'RFJ_fileCentertris.csv')
 
 
 # ################  MAIN CLASS  SupprimerDoublonsLignesCSV     ###################
@@ -366,6 +364,8 @@ pathOffileOuput = os.path.join(rep, 'RFJ_fileCentertris.csv')
 a = Rfj()
 ####
 colItemsFilter_list = a.colValueUniq('truefile')
+
+
 # print(colItemsFilter_list)
 # print(len(colItemsFilter_list))
 # colItemsFilter_list= a.supprimerDoublons(colItemsFilter_list)
@@ -386,4 +386,7 @@ rows = a.createRFJ('truefile', 'stage')
 #### lecture classe Rsfs() ######
 b = Rsfs()
 ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
-lrow = b.Write_StgSource_File_StgCible(ls, lc)
+# print(ls)
+
+Arows = b.Write_StgSource_File_StgCible(colItemsFilter_list, rows)
+# pprint(Arows)
