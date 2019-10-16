@@ -5,24 +5,26 @@ from pprint import pprint
 
 """  # General purpose
     ===============
-    Ce script contient trois programmes:
-    - Le premier(Purpose 1) a ete implemente afin de supprimer les doublons (replication de lignes) de la table
-    job-file-stage (JFS) deja cree que Christpher m'a signale.( Probably Will be move into JFS_plus.py )
+    Ce script contient trois programmes ou classe python:
+    - Le premier(Purpose 1 ou P1) a ete implemente afin de supprimer les doublons (replication de lignes) de la table
+    job-file-stage (JFS) deja cr\'ee que Christpher m'a signal\'e.
 
-    NB: P1 sera integr\'e dans le 'script_job_file_stage_Plus.py' afin d'optimiser le workflow. ( Probably Will be 
-    move into JFS_plus.py ). Ce processus \'a deux etapes n'est pas une solution perenne.
+    NB: P1 sera integr\'e dans le 'script_job_file_stage_Plus.py' afin d'optimiser le workflow.
+    En effet, ce processus \'a deux etapes, n'est pas une solution perenne donc will probably be 
+    move into JFS_plus.py.
 
-    - Le deuxieme(Purpose 2), permet d'etablir la relation entre File et Job (RFJ) d'o\'u le nom du script
+    - Le deuxieme(Purpose 2 ou  P2), permet d'etablir la relation entre File et Job (RFJ) d'o\'u le nom du script
     L'idee est, pour chaque file donn\'e, qu'on puisse lister les jobs qui l'utlisent soit en Cible, soit en Source.
-    NB: Ces deux scripts executent d'entr\'ee (input) le fichier 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv' 
-        qui est le fichier de sortie(output) de  'script_job_file_stage_Plus.py'.  
+    NB: Ces deux scripts s'appuient sur le fichier 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv' comme input file et
+        qui est le fichier de sortie(output file) de 'script_job_file_stage_Plus.py'.  
 
     - Le troisieme(Purpose 3), permet d'etablir une relation entre stageCible , StageSource et Fichier. 
 
     # Mode d'excution des scripts
     --------------------------
-    Pour executer un de ces scripts, il faut aller \'a la section 'MAIN' qui se trouve en bas du code et 
-    ensuite d\'ecommenter la partie qui voous interesse par exemple 'MAIN P1'
+    Pour executer un de ces scripts, il faut aller \'a la section 'MAIN <PROGRAMM' qui se trouve en bas du code et 
+    ensuite d\'ecommenter la partie qui voous interesse. Par exemple  si vous voulez executer 'MAIN P1', il faut le decommenter
+    et ensuite commenter les sections main P2 et P3
     !!! Attention: P1 est completement independant de P2 et P3. Donc vous pouvez l'executer en commentant les deux autres.
                    Cependant, P2 et P3 sont completementaires donc li\'es. En effet, P2 herite de P3 . 
                    P2 prend en parametres deux arguments qui sont les returns des methodes createRFJ et colValueUniq de la classe Rfj
@@ -33,27 +35,27 @@ from pprint import pprint
     --------
     Suppressions des doublons de table 'cf variable path'. 
 
-    Note pour moi :
+    Note pour moi (pas important):
     --- 
     voir pourquoi ce fichier ci dessous, a 'CORPSPAR_NOM_FIC_CATEL' apres l'extension:
     /export/home/exp/applications/doc/onide/datastage/source/TMP_FF_PENEF_EXTRANA_ONIDE_20190702150043.csvCORPSPAR_NOM_FIC_CATEL
 """
 class SupprimerDoublonsLignesCSV():
     """Cette classe comporte deux principales fonctions et une fonction utilitaire. 
-    Les fonctions principales sont  <removeCsvLines()> ,  <writeNewCSV()> . <removeCsvLines()> permet de lire
-    en supprimant les doublons et la fonction <removeCsvLines()> est la phase d'ecriture <writeNewCSV()>.
+    Les fonctions principales sont <removeCsvLines()> , <writeNewCSV()>.
+        - <removeCsvLines()> permet de lire le input file et de supprimer les doublons. 
+        - <writeNewCSV()> permet d'enregistrer la nouvelle version (lignes sans doublons)  dans 
+        un fichier qui est stock\'e dans vers le chemin precis\'e au niveau des proprietes(fonction init)
+    
     La fonction utilitaire <supprimerDoublons()> permet juste supprimer des eventuels doublons au cours du coding.
 
     La fonction <removeCsvLines()> est execut\'ee en premier. Elle prend inmplitement en parametre le fichier INPUT qui a
     d'eventuels doublons, il s'agit du fichier (job-file-stage (JFS) et retourne une liste de lignes sans doubons.
     Elle genere en retour une liste de lignes sans doublons. Cette liste sera utlis\'e par la fonction writeNewCSV().
-
-    La fonction writeNewCSV() enregistre les resulats dans un fichier qui est stock\'e dans vers le chemin precis\'e au niveau des proprietes
-    (fonction init)
     """
     def __init__(self):
 
-        self.rep = '/Users/ganasene/Downloads/projet_xml_insyco/code/resulats_projet_executable'                       # self.rep est le dirname 
+        self.rep = r'C:\Users\papas\Desktop\insyco\projet_xml_insyco\xml_log_officiel\resulats_projet_executable'                       # self.rep est le dirname 
         self.pathInput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO.csv')        # self.pathinput est le path absolu du fichier input cad le fichier lu en imput
         self.pathOuput =os.path.join(self.rep,'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO_clean.csv')  # self.pathOuput est path absolu pour renommer le nouveau fichier
 
@@ -94,6 +96,7 @@ class SupprimerDoublonsLignesCSV():
             csv_writer = csv.writer(file2)
             for line2 in list1_clean:
                 csv_writer.writerow(line2)
+        print('Enregistre')
 
 ##########################################
 
@@ -109,8 +112,9 @@ class SupprimerDoublonsLignesCSV():
 class Rfj:
 
     def __init__(self):
+        #bien precise le path absolu qui depend bien du type de OS
 
-        self.rep = '/Users/ganasene/Desktop/insyco/projet_xml_insyco/xml_log_officiel/resulats_projet_executable/'
+        self.rep = r'C:\Users\papas\Desktop\insyco\projet_xml_insyco\xml_log_officiel\resulats_projet_executable'
         self.pathOffileOuput = os.path.join(self.rep,'RFJ_basedOnTrueFile.csv')
         self.pathOffileInput = os.path.join(self.rep, 'jobName_fileName_truefileName_stageName_idenfiantIO_TypeIO2.csv')
 
