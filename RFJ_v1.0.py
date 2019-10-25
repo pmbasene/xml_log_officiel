@@ -394,3 +394,6 @@ ls, lc = b.getListSourceAndListCible(colItemsFilter_list, rows)
 
 Arows = b.Write_StgSource_File_StgCible(colItemsFilter_list, rows)
 # pprint(Arows)
+
+
+# just for testing
